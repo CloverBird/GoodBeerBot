@@ -4,7 +4,7 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D98F1D5B-AB03-4E16-9637-3008B30E14AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GodBeerBot.Api", "src\GodBeerBot.Api\GodBeerBot.Api.csproj", "{5087CAE8-845D-4C29-9FDB-4A779564D9BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodBeerBot.Api", "src\GoodBeerBot.Api\GoodBeerBot.Api.csproj", "{5087CAE8-845D-4C29-9FDB-4A779564D9BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
