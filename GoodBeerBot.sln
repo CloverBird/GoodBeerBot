@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D98F1D5B-AB03-4E16-9637-3008B30E14AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GodBeerBot.Api", "src\GodBeerBot.Api\GodBeerBot.Api.csproj", "{5087CAE8-845D-4C29-9FDB-4A779564D9BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5087CAE8-845D-4C29-9FDB-4A779564D9BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5087CAE8-845D-4C29-9FDB-4A779564D9BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5087CAE8-845D-4C29-9FDB-4A779564D9BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5087CAE8-845D-4C29-9FDB-4A779564D9BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5087CAE8-845D-4C29-9FDB-4A779564D9BB} = {D98F1D5B-AB03-4E16-9637-3008B30E14AC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A5B715C7-96A6-4A8B-A538-45DFB9B34AE0}
+	EndGlobalSection
+EndGlobal
