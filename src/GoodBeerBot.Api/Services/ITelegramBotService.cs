@@ -8,4 +8,6 @@ public interface ITelegramBotService
     Task SendTextAsync(long chatId, string text);   
     Task SendHtmlAsync(long chatId, string html);
     Task SendExpiryNotificationsAsync();
+
+    Task ClearReportsSheet();
 }

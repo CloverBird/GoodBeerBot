@@ -127,7 +127,7 @@ public class TelegramBotService : ITelegramBotService
         }
 
         // 5) фолбек
-        await SendTextAsync(chatId, "Команда не розпізнана. Спробуйте /start");
+        await SendTextAsync(chatId, "Команда не распознана. Попробуйте /start");
     }
 
     // === Відправити адмін-зведення + зробити лист “ПОЗИЦИИ” для співробітника ===
@@ -135,28 +135,33 @@ public class TelegramBotService : ITelegramBotService
     {
         var all = await _tables.GetDataItemsAsync();
 
-        // Адмін: від -2 до 15 днів, left > 0
+        // Адмін: від -inf до 20 днів, left > 0
         var adminItems = all
-            .Where(i => i.Days >= -2 && i.Days <= 15 && i.Left > 0)
+            .Where(i => i.Days >= double.NegativeInfinity && i.Days <= 20 && i.Left > 0)
             .OrderBy(i => i.Days)
             .ToList();
 
-        // Співробітник: 0..14 днів, left == 0
+        // Співробітник: 0..15 днів, left == 0
         var employeeItems = all
-            .Where(i => i.Days >= 0 && i.Days <= 14 && i.Left == 0)
+            .Where(i => i.Days >= 0 && i.Days <= 15 && i.Left == 0)
             .OrderBy(i => i.Days)
             .ToList();
 
         // 1) адмін-зведення
         if (adminItems.Count == 0)
         {
-            await SendHtmlAsync(_adminChatId, "На данный момент позиций с остатком дней от -2 до 15 нет");
+            await SendHtmlAsync(_adminChatId, "На данный момент позиций с остатком дней от -20 до 20 нет");
         }
         else
         {
-            var adminText = BuildAdminSummary(adminItems);
-            foreach (var chunk in SplitByLength(adminText, 3800))
-                await SendHtmlAsync(_adminChatId, chunk);
+            await SendHtmlAsync(_adminChatId, "<b>Сводка по срокам годности</b>:");
+
+            // 2) групи окремими повідомленнями
+            foreach (var groupText in BuildAdminSummaryChunks(adminItems))
+            {
+                foreach (var chunk in SplitByLength(groupText, 3800))  // твій існуючий helper
+                    await SendHtmlAsync(_adminChatId, chunk);
+            }
         }
 
         if (employeeItems.Count == 0)
@@ -177,31 +182,29 @@ public class TelegramBotService : ITelegramBotService
         await _tables.SavePositionsToSheetAsync(_employeeChatId, toSurvey);
     }
 
-    private static string BuildAdminSummary(IEnumerable<DataItem> items)
+    private static IEnumerable<string> BuildAdminSummaryChunks(IEnumerable<DataItem> items)
     {
-        // групування за “кольорами”
-        var groups = new (Func<DataItem, bool> pred, string emoji, string title)[]
-        {
-            (i => i.Days < 0, "⚫", "Срок истёк – списать"),
-            (i => i.Days == 0, "🔴", "Критично (0 дней)"),
+        var groups = new (Func<DataItem, bool> pred, string emoji, string title)[] {
+            (i => i.Days < 0,                 "⚫", "Срок истёк – списать"),
+            (i => i.Days == 0,                "🔴", "Критично (0 дней)"),
             (i => i.Days >= 1 && i.Days <= 3, "🟠", "Опасно (1–3 дня)"),
             (i => i.Days >= 4 && i.Days <= 7, "🟡", "Внимание (4–7 дней)"),
-            (i => i.Days >= 8 && i.Days <= 14, "🟢", "Осторожно (8–14 дней)"),
-            (i => i.Days == 15, "⚪", "На контроле (15 дней)"),
+            (i => i.Days >= 8 && i.Days <= 14,"🟢", "Осторожно (8–14 дней)"),
+            (i => i.Days == 15,               "⚪", "На контроле (15 дней)"),
         };
 
-        var sb = new StringBuilder();
-        sb.AppendLine("<b>Сводка по срокам годности</b>:");
         foreach (var g in groups)
         {
             var arr = items.Where(g.pred).ToList();
             if (arr.Count == 0) continue;
 
-            sb.AppendLine().Append(g.emoji).Append(' ').Append("<b>").Append(g.title).AppendLine("</b>:");
+            var sb = new StringBuilder();
+            sb.AppendLine($"{g.emoji} <b>{g.title}</b>:");
             foreach (var i in arr)
                 sb.AppendLine($" • {i.Name} — осталось {i.Days} дн., остаток <b>{i.Left}</b>");
+
+            yield return sb.ToString();
         }
-        return sb.ToString();
     }
 
     private static string BuildEmployeeNotice(IEnumerable<DataItem> items)
@@ -209,8 +212,17 @@ public class TelegramBotService : ITelegramBotService
         var sb = new StringBuilder();
         sb.AppendLine("<b>Уведомление по истечению срока (остаток 0)</b>:");
         foreach (var i in items)
-            sb.AppendLine($" • {i.Name} — срок годности до {i.Expiry:dd.MM.yyyy}");
+            sb.AppendLine($" {GetEmoji(i)} {i.Name} — срок годности до {i.Expiry:dd.MM.yyyy}");
         return sb.ToString();
+    }
+
+    private static string GetEmoji(DataItem dataItem)
+    {
+        return dataItem.Days < 0 ? "⚫" :
+               dataItem.Days == 0 ? "🔴" :
+               dataItem.Days <= 3 ? "🟠" :
+               dataItem.Days <= 7 ? "\U0001f7e1" :
+               dataItem.Days <= 14 ? "\U0001f7e2" : "⚪";
     }
 
     private async Task SendAdminReportAsync(long chatId, UserState s)
@@ -237,4 +249,9 @@ public class TelegramBotService : ITelegramBotService
 
     public Task SendHtmlAsync(long chatId, string html)
         => _bot.SendMessage(chatId, html, parseMode: ParseMode.Html);
+
+    public async Task ClearReportsSheet()
+    {
+        await _tables.ClearReportsSheet();
+    }
 }

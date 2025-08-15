@@ -1,4 +1,5 @@
-﻿using GoodBeerBot.Api.Models;
+﻿using GoodBeerBot.Api.Configurations;
+using GoodBeerBot.Api.Models;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 
@@ -7,15 +8,16 @@ namespace GoodBeerBot.Api.Services;
 public class GoogleTableService : ITableService
 {
     private readonly SheetsService _sheetsService;
-    private readonly string _spreadsheetId = "19Me6ktCUTKkvNMu0hXE1J5Mw5G0960VPBEEmrs0ogPU"; // change to your sheet Id
+    private readonly string _spreadsheetId;
 
     private const string SHEET_NAME = "СРОКИ";
     private const string RESPONSE_SHEET_NAME = "ПОЗИЦИИ";
     private const string REPORTS_SHEET_NAME = "ОТЧЁТЫ";
 
-    public GoogleTableService(SheetsService sheetsService)
+    public GoogleTableService(SheetsService sheetsService, GoogleTablesConfiguration googleTablesConfiguration)
     {
         _sheetsService = sheetsService;
+        _spreadsheetId = googleTablesConfiguration.SheetId;
     }
 
     public async Task<List<DataItem>> GetDataItemsAsync()
@@ -151,6 +153,12 @@ public class GoogleTableService : ITableService
     {
         var clear = new ClearValuesRequest();
         await _sheetsService.Spreadsheets.Values.Clear(clear, _spreadsheetId, $"{sheetName}!A2:Z").ExecuteAsync();
+    }
+
+    public async Task ClearReportsSheet()
+    {
+        var clear = new ClearValuesRequest();
+        await _sheetsService.Spreadsheets.Values.Clear(clear, _spreadsheetId, $"{REPORTS_SHEET_NAME}!A2:Z").ExecuteAsync();
     }
 
     private async Task EnsureSheetWithHeaderAsync(string sheetName, string[] headers)

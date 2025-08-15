@@ -19,6 +19,8 @@ public class ExpiryNotificationService : BackgroundService
         {
             try
             {
+                await _botService.ClearReportsSheet();
+
                 await _botService.SendExpiryNotificationsAsync();
                 _logger.LogInformation("Expiry notifications sent.");
             }
