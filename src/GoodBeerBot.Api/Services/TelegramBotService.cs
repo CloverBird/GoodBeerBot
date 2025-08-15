@@ -13,8 +13,8 @@ public class TelegramBotService : ITelegramBotService
     private readonly ITableService _tables;
     private readonly ILogger<TelegramBotService> _log;
 
-    private readonly long _adminChatId = 7373966101;   
-    private readonly long _employeeChatId = 1102079094;
+    private readonly long _adminChatId = 644532204;   
+    private readonly long _employeeChatId = 644532204;
 
 
     private static readonly Dictionary<long, UserState> _states = new();
@@ -31,9 +31,6 @@ public class TelegramBotService : ITelegramBotService
         _log = log;
     }
 
-    public Task SetWebhookAsync(string publicWebhookUrl)
-        => _bot.SetWebhook(publicWebhookUrl);
-
     public async Task ProcessUpdateAsync(Update update)
     {
         if (update.Type != UpdateType.Message || update.Message?.Text is null)
@@ -46,7 +43,7 @@ public class TelegramBotService : ITelegramBotService
         if (text.Equals("/start", StringComparison.OrdinalIgnoreCase))
         {
             _states.Remove(chatId);
-            await SendTextAsync(chatId, "Введіть команду для вибору точки магазину: /ostatki_gb1 ... /ostatki_gb10");
+            await SendTextAsync(chatId, "Введите команду для выбора точки магазина (например, /ostatki_gb1)");
             return;
         }
 
@@ -54,7 +51,7 @@ public class TelegramBotService : ITelegramBotService
         if (text.Equals("/notify", StringComparison.OrdinalIgnoreCase))
         {
             await SendExpiryNotificationsAsync();
-            await SendTextAsync(chatId, "Оповіщення відправлені.");
+            await SendTextAsync(chatId, "Уведомления отправлены.");
             return;
         }
 
@@ -86,7 +83,7 @@ public class TelegramBotService : ITelegramBotService
             };
 
             var first = positions[0];
-            await SendTextAsync(chatId, $"{first.Name}, строк до {first.Expiry:dd.MM.yyyy}. Введите остаток.");
+            await SendTextAsync(chatId, $"{first.Name}, срок до {first.Expiry:dd.MM.yyyy}. Введите остаток.");
             return;
         }
 
@@ -141,7 +138,7 @@ public class TelegramBotService : ITelegramBotService
 
         // Співробітник: 0..14 днів, left == 0
         var employeeItems = all
-            .Where(i => i.Days >= 0 && i.Days <= 14 && i.Days == 0)
+            .Where(i => i.Days >= 0 && i.Days <= 14 && i.Left == 0)
             .OrderBy(i => i.Days)
             .ToList();
 

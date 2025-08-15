@@ -4,13 +4,13 @@ public class DataItem
 {
     public string Name { get; set; }
 
-    public int Left { get; set; }
+    public double? Left { get; set; }
 
-    public int Days {  get; set; }
+    public int? Days {  get; set; }
 
-    public DateOnly Expiry { get; set; }
+    public DateOnly? Expiry { get; set; }
 
-    public DataItem(string name, int left, int days, DateOnly expiry)
+    public DataItem(string name, double? left, int? days, DateOnly? expiry)
     {
         Name = name;
         Left = left;

@@ -10,5 +10,5 @@ public interface ITableService
 
     Task SavePositionsToSheetAsync(long chatId, IEnumerable<Position> positions);
 
-    Task AppendReportRowAsync(DateTime when, long chatId, string point, string name, DateOnly expiry, int qty);
+    Task AppendReportRowAsync(DateTime when, long chatId, string point, string name, DateOnly? expiry, int qty);
 }

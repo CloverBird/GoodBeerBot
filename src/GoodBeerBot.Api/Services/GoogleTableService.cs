@@ -36,9 +36,12 @@ public class GoogleTableService : ITableService
         foreach (var row in values.Skip(1))
         {
             string name = GetCell(row, idxName);
-            int left = int.Parse(GetCell(row, idxLeft));
-            int days = int.Parse(GetCell(row, idxDays));
-            DateOnly expiry = DateOnly.ParseExact(GetCell(row, idxExpiry), "dd.MM.yyyy");
+            var str1 = GetCell(row, idxLeft);
+            double? left = string.IsNullOrEmpty(str1) ? null : double.Parse(str1);
+            var str2 = GetCell(row, idxDays);
+            int? days = string.IsNullOrEmpty(str2) ? null : int.Parse(str2);
+            var str3 = GetCell(row, idxExpiry);
+            DateOnly? expiry = string.IsNullOrEmpty(str3) ? null : DateOnly.ParseExact(str3, "dd.MM.yyyy");
             list.Add(new DataItem(name, left, days, expiry));
         }
         return list;
@@ -66,7 +69,7 @@ public class GoogleTableService : ITableService
         return list;
     }
 
-    public async Task AppendReportRowAsync(DateTime when, long chatId, string point, string name, DateOnly expiry, int qty)
+    public async Task AppendReportRowAsync(DateTime when, long chatId, string point, string name, DateOnly? expiry, int qty)
     {
         await EnsureSheetWithHeaderAsync(
             REPORTS_SHEET_NAME,
@@ -80,7 +83,7 @@ public class GoogleTableService : ITableService
                 chatId,
                 point,
                 name,
-                expiry.ToString("dd.MM.yyyy"),
+                expiry?.ToString("dd.MM.yyyy"),
                 qty
             }
         };
@@ -106,7 +109,7 @@ public class GoogleTableService : ITableService
             DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
             chatId,
             p.Name,
-            p.Expiry.ToString("dd.MM.yyyy")
+            p.Expiry?.ToString("dd.MM.yyyy")
         }).Cast<IList<object>>().ToList();
 
         if (rows.Count == 0) return;

@@ -8,10 +8,10 @@ namespace GoodBeerBot.Api.Controllers;
 [Route("api/bot")]
 public class TelegramBotController : ControllerBase
 {
-    private readonly Logger<TelegramBotController> _logger;
+    private readonly ILogger<TelegramBotController> _logger;
     private readonly ITelegramBotService _telegramBotService;
 
-    public TelegramBotController(Logger<TelegramBotController> logger,
+    public TelegramBotController(ILogger<TelegramBotController> logger,
                                  ITelegramBotService telegramBotService)
     {
         _logger = logger;
@@ -21,7 +21,24 @@ public class TelegramBotController : ControllerBase
     [HttpPost("update")]
     public async Task<IActionResult> Post([FromBody] Update update)
     {
-        await _telegramBotService.ProcessUpdateAsync(update); // твоя логіка
-        return Ok(); // важливо: 200 OK швидко
+        try
+        {
+            if (update is null)
+            {
+                _logger.LogWarning("Null update received");
+                return Ok();
+            }
+
+            _logger.LogInformation("Update {Id} type {Type}", update.Id, update.Type);
+
+            await _telegramBotService.ProcessUpdateAsync(update);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing update");
+            return Ok();
+        }
     }
 }
