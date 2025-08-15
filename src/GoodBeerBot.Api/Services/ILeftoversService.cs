@@ -1,4 +1,4 @@
-﻿namespace GodBeerBot.Api.Services;
+﻿namespace GoodBeerBot.Api.Services;
 
 public interface ILeftoversService
 {

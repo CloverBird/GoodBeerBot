@@ -1,6 +1,7 @@
-﻿using GodBeerBot.Api.Services;
+﻿using GoodBeerBot.Api.Services;
+using GoodBeerBot.Api.HostesServices;
 
-namespace GodBeerBot.Api.Extensions;
+namespace GoodBeerBot.Api.Extensions;
 
 internal static class ServiceCollectionExtensions
 {
@@ -9,7 +10,7 @@ internal static class ServiceCollectionExtensions
         serviceCollection.AddTransient<ITableService, GoogleTableService>();
         serviceCollection.AddTransient<ILeftoversService, LeftoversService>();
 
-        serviceCollection.AddScoped<ITelegramBotService, TelegramBotService>();
+        serviceCollection.AddTransient<ITelegramBotService, TelegramBotService>();
 
         return serviceCollection;
     }

@@ -2,7 +2,7 @@
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 
-namespace GodBeerBot.Api.Services;
+namespace GoodBeerBot.Api.Services;
 
 public class GoogleTableService : ITableService
 {

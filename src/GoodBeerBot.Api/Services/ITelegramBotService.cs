@@ -1,6 +1,12 @@
-﻿namespace GodBeerBot.Api.Services;
+﻿using Telegram.Bot.Types;
+
+namespace GoodBeerBot.Api.Services;
 
 public interface ITelegramBotService
 {
-    
+    Task SetWebhookAsync(string publicWebhookUrl);
+    Task ProcessUpdateAsync(Update update);     
+    Task SendTextAsync(long chatId, string text);   
+    Task SendHtmlAsync(long chatId, string html);
+    Task SendExpiryNotificationsAsync();
 }

@@ -1,6 +1,6 @@
 ﻿using GoodBeerBot.Api.Models;
 
-namespace GodBeerBot.Api.Services;
+namespace GoodBeerBot.Api.Services;
 
 public interface ITableService
 {
@@ -9,4 +9,6 @@ public interface ITableService
     Task<List<Position>> ReadPositionsAsync();
 
     Task SavePositionsToSheetAsync(long chatId, IEnumerable<Position> positions);
+
+    Task AppendReportRowAsync(DateTime when, long chatId, string point, string name, DateOnly expiry, int qty);
 }

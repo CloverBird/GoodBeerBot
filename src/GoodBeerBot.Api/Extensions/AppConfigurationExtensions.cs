@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace GodBeerBot.Api.Extensions;
+namespace GoodBeerBot.Api.Extensions;
 
 public static class AppConfigurationExtensions
 {
