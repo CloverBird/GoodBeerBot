@@ -1,9 +1,12 @@
-using GodBeerBot.Api.Configurations;
+using GoodBeerBot.Api.Configurations;
 using GodBeerBot.Api.Extensions;
+using GoodBeerBot.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Services.LoadAppConfiguration<AppConfiguration>(builder.Configuration);
+
+builder.Services.AddGoogleServices();
 
 builder.Services.AddApiServices();
 

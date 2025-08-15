@@ -17,22 +17,19 @@ public static class AppConfigurationExtensions
     private static void RegisterSingletonInstance(IServiceCollection serviceCollection, object obj)
     {
         if (obj == null)
-        {
             return;
-        }
 
         serviceCollection.Add(ServiceDescriptor.Singleton(obj.GetType(), obj));
         PropertyInfo[] properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
         foreach (PropertyInfo propertyInfo in properties)
-        {
-            if (!propertyInfo.PropertyType.IsValueType && !(propertyInfo.PropertyType == typeof(string)) && (!(propertyInfo.PropertyType.GetInterface(typeof(IEnumerable).Name) != null) || !(propertyInfo.PropertyType.GetInterface(typeof(IEnumerable<>).Name) != null)))
+            if (!propertyInfo.PropertyType.IsValueType && 
+                !(propertyInfo.PropertyType == typeof(string)) && 
+                (!(propertyInfo.PropertyType.GetInterface(typeof(IEnumerable).Name) != null) || 
+                !(propertyInfo.PropertyType.GetInterface(typeof(IEnumerable<>).Name) != null)))
             {
                 object value = propertyInfo.GetValue(obj);
                 if (value != null)
-                {
                     RegisterSingletonInstance(serviceCollection, value);
-                }
             }
-        }
     }
 }

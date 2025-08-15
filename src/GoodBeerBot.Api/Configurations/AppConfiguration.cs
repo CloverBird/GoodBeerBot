@@ -1,6 +1,5 @@
-﻿namespace GodBeerBot.Api.Configurations;
+﻿namespace GoodBeerBot.Api.Configurations;
 
 public class AppConfiguration
 {
-
 }
