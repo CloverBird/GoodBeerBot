@@ -1,4 +1,5 @@
-﻿using GoodBeerBot.Api.Models;
+﻿using GoodBeerBot.Api.Configurations;
+using GoodBeerBot.Api.Models;
 using System.Text;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
@@ -13,8 +14,8 @@ public class TelegramBotService : ITelegramBotService
     private readonly ITableService _tables;
     private readonly ILogger<TelegramBotService> _log;
 
-    private readonly long _adminChatId = 644532204;   
-    private readonly long _employeeChatId = 644532204;
+    private readonly long _adminChatId;   
+    private readonly long _employeeChatId;
 
 
     private static readonly Dictionary<long, UserState> _states = new();
@@ -24,11 +25,15 @@ public class TelegramBotService : ITelegramBotService
     public TelegramBotService(
         ITelegramBotClient bot,
         ITableService tables,
-        ILogger<TelegramBotService> log)
+        ILogger<TelegramBotService> log,
+        TelegramBotConfiguration telegramBotConfiguration)
     {
         _bot = bot;
         _tables = tables;
         _log = log;
+
+        _adminChatId = telegramBotConfiguration.AdminChatId;
+        _employeeChatId = telegramBotConfiguration.EmployeeChatId;
     }
 
     public async Task ProcessUpdateAsync(Update update)
